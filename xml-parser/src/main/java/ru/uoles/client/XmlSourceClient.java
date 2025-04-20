@@ -5,7 +5,6 @@ import org.springframework.web.client.RestTemplate;
 import ru.uoles.model.XmlDto;
 import ru.uoles.model.XmlElementDto;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
