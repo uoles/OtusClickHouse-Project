@@ -1,16 +1,10 @@
 package ru.uoles.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 /**
@@ -22,14 +16,12 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode
-@Entity
 @XmlRootElement(name = "Valute")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlElementDto implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @XmlAttribute(name = "ID")
+    protected String strId;
 
     @XmlElement(name = "NumCode")
     private String numCode;
@@ -43,10 +35,7 @@ public class XmlElementDto implements Serializable {
     @XmlElement(name = "Name")
     private String name;
 
-    @Getter
     @XmlElement(name = "Value")
-    @JsonIgnore
-    @Transient
     private String srtValue;
 
     public double getDoubleValue() {
@@ -60,7 +49,7 @@ public class XmlElementDto implements Serializable {
     @Override
     public String toString() {
         return new StringBuilder("\n")
-                .append(name).append(" (")
+                .append(name).append("-").append(strId).append(" (")
                 .append("numCode=").append(numCode).append(", ")
                 .append("charCode=").append(charCode).append(", ")
                 .append("nominal=").append(nominal).append(", ")

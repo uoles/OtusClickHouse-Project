@@ -21,7 +21,6 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode
-@Entity
 @XmlRootElement(name = "ValCurs")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlDto implements Serializable {

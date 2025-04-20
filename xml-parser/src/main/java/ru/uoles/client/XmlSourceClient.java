@@ -1,11 +1,11 @@
 package ru.uoles.client;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.uoles.model.XmlDto;
 import ru.uoles.model.XmlElementDto;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +19,13 @@ import java.util.List;
 @Component
 public class XmlSourceClient {
 
-    private static final String URL = "https://cbr.ru/scripts/XML_daily.asp?date_req=23/01/2022.xml";
+    // date format 23/01/2022
+    private static final String URL = "https://cbr.ru/scripts/XML_daily.asp?date_req=:date.xml";
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public List<XmlElementDto> getXml() {
-        XmlDto response = restTemplate.getForObject(URL, XmlDto.class);
+    public List<XmlElementDto> getXmlByDate(final String date) {
+        XmlDto response = restTemplate.getForObject(URL.replace(":date", date), XmlDto.class);
 
         List<XmlElementDto> result = new ArrayList<>();
         if (response != null) {
