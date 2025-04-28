@@ -68,8 +68,8 @@ public class XmlProcessService {
     private void test() {
         try {
             if (!isExecuted) {
-                this.isExecuted = true;
-                this.getXml();
+                isExecuted = true;
+                getXml();
             }
         } catch (Exception e) {
             log.error("ERROR. Getting xml exception: {}", e.getMessage(), e);
