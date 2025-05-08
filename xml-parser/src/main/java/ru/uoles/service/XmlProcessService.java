@@ -31,7 +31,7 @@ public class XmlProcessService {
     private boolean isExecuted = false;
 
     public void getXml() {
-        IntStream.range(2020, 2025).forEachOrdered(year -> {
+        IntStream.range(2010, 2015).forEachOrdered(year -> {
             IntStream.range(1, 13).forEachOrdered(month -> {
                 YearMonth yearMonthObject = YearMonth.of(year, month);
                 int daysInMonth = yearMonthObject.lengthOfMonth();

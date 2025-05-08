@@ -23,7 +23,7 @@ public class XmlRepository  {
     private static final String INSERT_DATA_SQL = """
             INSERT INTO valute_data( c_date, c_name, c_str_id, c_num_code, c_char_code, c_nominal, c_value )
                 VALUES( :date, :name, :strId, :numCode, :charCode, :nominal, :value )
-                ON CONFLICT DO NOTHING
+                ON CONFLICT ( c_date, c_str_id ) DO NOTHING
             """;
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
