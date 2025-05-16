@@ -2,16 +2,18 @@ package ru.uoles.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.uoles.client.XmlSourceClient;
 import ru.uoles.model.XmlElementDto;
 import ru.uoles.repository.XmlRepository;
 
-import java.text.DecimalFormat;
-import java.time.YearMonth;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.stream.IntStream;
+
+import static org.apache.commons.lang3.time.DateFormatUtils.format;
 
 /**
  * xml-parser
@@ -28,27 +30,33 @@ public class XmlProcessService {
     private final XmlSourceClient xmlSourceClient;
     private final XmlRepository xmlRepository;
 
-    private boolean isExecuted = false;
+    public void processPeriod(final String fromDate, final String toDate) {
+        List<String> list = getDatesBetween(fromDate, toDate);
 
-    public void getXml() {
-        IntStream.range(2010, 2015).forEachOrdered(year -> {
-            IntStream.range(1, 13).forEachOrdered(month -> {
-                YearMonth yearMonthObject = YearMonth.of(year, month);
-                int daysInMonth = yearMonthObject.lengthOfMonth();
+        for (String date : list) {
+            processDate(date);
+        }
+    }
 
-                for (int day=1; day<=daysInMonth; day++) {
-                    String date = format(day, "00") + "/" +
-                            format(month, "00") + "/" +
-                            year;
+    public List<String> getDatesBetween(String fromDate, String toDate) {
+        List<String> dates = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-                    List<XmlElementDto> list = xmlSourceClient.getXmlByDate(date);
-                    xmlRepository.insert(list, date);
+        LocalDate startDate = LocalDate.parse(fromDate, formatter);
+        LocalDate endDate =  LocalDate.parse(toDate, formatter);
 
-                    log.info("date {}", date);
-                    sleep();
-                }
-            });
-        });
+        for(LocalDate date = startDate; !endDate.isBefore(date); date = date.plusDays(1)){
+            dates.add(date.format(formatter));
+        }
+        return dates;
+    }
+
+    public void processDate(final String date) {
+        List<XmlElementDto> list = xmlSourceClient.getXmlByDate(date);
+        xmlRepository.insert(list, date);
+
+        log.info("Process date: {}", date);
+        sleep();
     }
 
     public void sleep() {
@@ -59,20 +67,13 @@ public class XmlProcessService {
         }
     }
 
-    public String format(int value, String format) {
-        DecimalFormat df = new DecimalFormat(format);
-        return df.format(value);
-    }
+    public String getNowDate() {
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
-    @Scheduled(initialDelay = 3000, fixedDelay = 60000)
-    private void test() {
-        try {
-            if (!isExecuted) {
-                isExecuted = true;
-                getXml();
-            }
-        } catch (Exception e) {
-            log.error("ERROR. Getting xml exception: {}", e.getMessage(), e);
-        }
+        return format(day, "00") + "/" +
+                format(month, "00") + "/" +
+                year;
     }
 }
