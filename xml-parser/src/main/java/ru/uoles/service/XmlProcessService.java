@@ -2,6 +2,7 @@ package ru.uoles.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.uoles.client.XmlSourceClient;
 import ru.uoles.model.XmlElementDto;
@@ -74,8 +75,8 @@ public class XmlProcessService {
 
         log.info("--- Current date {}, {}, {}", day, month, year);
 
-        return format(day, "00") + "/" +
-                format(month, "00") + "/" +
+        return StringUtils.leftPad(String.valueOf(day), 2, "0") + "/" +
+                StringUtils.leftPad(String.valueOf(month), 2, "0") + "/" +
                 year;
     }
 }
