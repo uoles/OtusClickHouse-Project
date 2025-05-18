@@ -27,7 +27,9 @@ public class OnceLoadScheduler {
         try {
             if (!isExecuted) {
                 isExecuted = true;
-                xmlProcessService.processPeriod("16/05/2025", xmlProcessService.getNowDate());
+                String currentDate = xmlProcessService.getNowDate();
+                log.info("--- OnceLoadScheduler. Get data to current date: {}", currentDate);
+                xmlProcessService.processPeriod("16/05/2025", currentDate);
             }
         } catch (Exception e) {
             log.error("ERROR. Getting xml exception: {}", e.getMessage(), e);

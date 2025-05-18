@@ -23,6 +23,8 @@ public class DayLoadScheduler {
     @Scheduled(cron = "0 12 * * * *")
     private void execute() {
         try {
+            String currentDate = xmlProcessService.getNowDate();
+            log.info("--- DayLoadScheduler. Get data to current date: {}", currentDate);
             xmlProcessService.processDate(xmlProcessService.getNowDate());
         } catch (Exception e) {
             log.error("ERROR. Getting xml exception: {}", e.getMessage(), e);
