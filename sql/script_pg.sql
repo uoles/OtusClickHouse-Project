@@ -17,7 +17,7 @@ ON pgclick.valute_data(id);
 CREATE UNIQUE INDEX idx_valute_data
 ON pgclick.valute_data(date, str_id);
 
-CREATE SEQUENCE IF NOT EXISTS seq_valute_id;
+CREATE SEQUENCE IF NOT EXISTS pgclick.seq_valute_id;
 
 select nextval('seq_valute_id');
 
