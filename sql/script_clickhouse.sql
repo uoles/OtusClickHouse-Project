@@ -1,3 +1,4 @@
+
 CREATE TABLE valute_data
 (
     c_date String,
@@ -40,7 +41,11 @@ CREATE MATERIALIZED VIEW valute_data_queue_mv TO valute_data
     c_char_code String,
     c_nominal String,
     c_value String
-) AS SELECT message FROM valute_data_queue;
+) AS SELECT c_date, c_name, c_str_id, c_num_code, c_char_code, c_nominal, c_value  
+FROM valute_data_queue;
+
 
 select *
-from valute_data_queue_mv
+from valute_data_queue_mv;
+
+
