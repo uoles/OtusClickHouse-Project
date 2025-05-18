@@ -68,9 +68,9 @@ public class XmlProcessService {
     }
 
     public String getNowDate() {
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        int month = Calendar.getInstance().get(Calendar.MONTH);
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int year = LocalDate.now().getYear();
+        int month = LocalDate.now().getMonthValue();
+        int day = LocalDate.now().getDayOfMonth();
 
         return format(day, "00") + "/" +
                 format(month, "00") + "/" +
