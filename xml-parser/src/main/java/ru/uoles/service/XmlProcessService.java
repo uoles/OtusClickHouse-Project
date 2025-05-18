@@ -72,6 +72,8 @@ public class XmlProcessService {
         int month = LocalDate.now().getMonthValue();
         int day = LocalDate.now().getDayOfMonth();
 
+        log.info("--- Current date {}, {}, {}", day, month, year);
+
         return format(day, "00") + "/" +
                 format(month, "00") + "/" +
                 year;
