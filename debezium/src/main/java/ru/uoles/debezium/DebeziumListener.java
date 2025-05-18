@@ -101,7 +101,6 @@ public class DebeziumListener {
                 ImmutableMap.of(SlotConstants.SLOT_NAME_PARAM, SLOT_NAME),
                 (rs, rowNum) -> rs.getBoolean(SlotConstants.SLOT_ACTIVE_COLUMN)
         );
-
         return !CollectionUtils.isEmpty(result) && !result.get(0);
     }
 
@@ -116,7 +115,10 @@ public class DebeziumListener {
     @Scheduled(initialDelay = 3000, fixedDelay = 15000)
     private void execute() {
         int count = this.executor.getActiveCount();
-        if (count == 0 && slotIsNotActive()) {
+        boolean isNotActive = !slotIsNotActive();
+        log.info("--- DebeziumListener execute, isNotActive: {}", isNotActive);
+
+        if (count == 0 && isNotActive) {
             executor.execute(debeziumEngine);
             log.info("--- DebeziumListener started");
         }
