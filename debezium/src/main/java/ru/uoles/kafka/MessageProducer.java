@@ -2,11 +2,7 @@ package ru.uoles.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.clients.producer.*;
 import org.springframework.stereotype.Component;
 import ru.uoles.model.ValuteDto;
 
@@ -45,30 +41,43 @@ public class MessageProducer {
             log.info("--- ADD. Row: {}", valute);
         });
 
-        // create Producer properties
-        Properties properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "89.169.3.137:9092");
-        properties.setProperty(ProducerConfig.RETRIES_CONFIG, "0");
-        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all");
-        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        // create instance for properties to access producer configs
+        Properties props = new Properties();
 
-        // create the producer
-        KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
+        //Assign localhost id
+        props.put("bootstrap.servers", "89.169.3.137:29093");
+
+        //Set acknowledgements for producer requests.
+        props.put("acks", "all");
+
+        //If the request fails, the producer can automatically retry,
+        props.put("retries", 0);
+
+        //Specify buffer size in config
+        props.put("batch.size", 16384);
+
+        //Reduce the no of requests less than 0
+        props.put("linger.ms", 1);
+
+        //The buffer.memory controls the total amount of memory available to the producer for buffering.
+        props.put("buffer.memory", 33554432);
+
+        props.put("key.serializer",
+                "org.apache.kafka.common.serialization.StringSerializer");
+
+        props.put("value.serializer",
+                "org.apache.kafka.common.serialization.StringSerializer");
 
         // send data - asynchronous
-        try {
+        try (Producer<String, String> producer = new KafkaProducer<>(props)){
             ProducerRecord<String, String> producerRecord =
                     new ProducerRecord<>("valute_topic", mapper.writeValueAsString(valute));
             Future<RecordMetadata> future = producer.send(producerRecord);
             RecordMetadata metadata = future.get();
+
+            producer.flush();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
-        // flush data - synchronous
-        producer.flush();
-        // flush and close producer
-        producer.close();
     }
 }
