@@ -44,26 +44,30 @@ public class PropertiesConfig {
     }
 
     public static String getHost() {
-        return getProperties().getProperty("customer.datasource.host");
+        return getProperties().getProperty("debezium.datasource.host");
     }
 
     public static String getPort() {
-        return getProperties().getProperty("customer.datasource.port");
+        return getProperties().getProperty("debezium.datasource.port");
     }
 
     public static String getUsername() {
-        return getProperties().getProperty("customer.datasource.username");
+        return getProperties().getProperty("debezium.datasource.username");
     }
 
     public static String getPassword() {
-        return getProperties().getProperty("customer.datasource.password");
+        return getProperties().getProperty("debezium.datasource.password");
     }
 
     public static String getSchema() {
-        return getProperties().getProperty("customer.datasource.schema");
+        return getProperties().getProperty("debezium.datasource.schema");
     }
 
     public static String getDatabaseName() {
-        return getProperties().getProperty("customer.datasource.database");
+        return getProperties().getProperty("debezium.datasource.database");
+    }
+
+    public static String getSnapshotInitial() {
+        return getProperties().getProperty("debezium.snapshot.initial");
     }
 }

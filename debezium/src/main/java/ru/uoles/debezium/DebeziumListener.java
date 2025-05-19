@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import ru.uoles.config.AppConfig;
+import ru.uoles.debezium.config.PropertiesConfig;
 import ru.uoles.debezium.constants.SlotConstants;
 import ru.uoles.debezium.db.PostgreConnection;
 import ru.uoles.debezium.db.PostgreJdbcTemplate;
@@ -76,7 +77,7 @@ public class DebeziumListener {
             if (Objects.nonNull(sourceRecordChangeValue)) {
                 Operation operation = Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
 
-                if (!operation.equals(Operation.READ) || appConfig.getSnapshotInitial() == 1) {
+                if (!operation.equals(Operation.READ) || "1".equals(PropertiesConfig.getSnapshotInitial())) {
                     Map<String, Object> dataAfter = getData((Struct) sourceRecordChangeValue.get(AFTER));
                     kafkaManager.addProcess(dataAfter);
                 }

@@ -15,9 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppConfig {
 
-    @Value("${debezium.snapshot.initial}")
-    private Integer snapshotInitial;
-
     @Value("${kafka.bootstrap.server}")
     private String kafkaServer;
 }
