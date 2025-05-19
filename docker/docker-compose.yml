@@ -47,6 +47,7 @@ services:
         condition: service_healthy
     ports:
       - "29092:29092"
+      - "29093:29093"
     healthcheck:
       test: [ "CMD", "nc", "-vz", "localhost", "9092" ]
       interval: 10s
