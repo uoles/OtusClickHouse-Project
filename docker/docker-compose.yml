@@ -28,6 +28,7 @@ services:
       - kafka
 
   zookeeper:
+    container_name: zookeeper
     image: confluentinc/cp-zookeeper:6.2.4
     healthcheck:
       test: [ "CMD", "nc", "-vz", "localhost", "2181" ]
@@ -41,6 +42,7 @@ services:
       - 22181:2181
 
   kafka:
+    container_name: kafka
     image: confluentinc/cp-kafka:6.2.4
     depends_on:
       zookeeper:
