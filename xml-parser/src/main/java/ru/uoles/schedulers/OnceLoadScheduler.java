@@ -31,7 +31,8 @@ public class OnceLoadScheduler {
                 String currentDate = xmlProcessService.getNowDate();
                 log.info("--- OnceLoadScheduler. Get data to current date: {}", currentDate);
 
-                xmlProcessService.processPeriod("01/01/2010", currentDate);
+                final String lastDate = xmlProcessService.getLastDate();
+                xmlProcessService.processPeriod(lastDate, currentDate);
             }
         } catch (Exception e) {
             log.error("ERROR. Getting xml exception: {}", e.getMessage(), e);

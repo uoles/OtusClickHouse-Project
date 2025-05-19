@@ -60,6 +60,10 @@ public class XmlProcessService {
         sleep();
     }
 
+    public String getLastDate() {
+        return xmlRepository.selectLastDate();
+    }
+
     public void sleep() {
         try {
             Thread.sleep(200);

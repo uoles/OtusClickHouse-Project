@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import ru.uoles.model.XmlElementDto;
 
 import javax.transaction.Transactional;
@@ -20,10 +21,19 @@ import java.util.List;
 @AllArgsConstructor
 public class XmlRepository  {
 
-    private static final String INSERT_DATA_SQL = """
-            INSERT INTO valute_data( id, date, name, str_id, num_code, char_code, nominal, value )
-                VALUES( nextval('seq_valute_id'), :date, :name, :strId, :numCode, :charCode, :nominal, :value )
-                ON CONFLICT ( date, str_id ) DO NOTHING
+    private static final String INSERT_DATA_SQL =
+            """
+                INSERT INTO valute_data( id, date, name, str_id, num_code, char_code, nominal, value )
+                    VALUES( nextval('seq_valute_id'), :date, :name, :strId, :numCode, :charCode, :nominal, :value )
+                    ON CONFLICT ( date, str_id ) DO NOTHING
+            """;
+
+    private static final String SELECT_LAST_DATA_SQL =
+            """
+                SELECT date
+                FROM valute_data
+                ORDER BY id DESC
+                LIMIT 1
             """;
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -43,5 +53,13 @@ public class XmlRepository  {
         }).toArray(MapSqlParameterSource[]::new);
 
         jdbcTemplate.batchUpdate(INSERT_DATA_SQL, params);
+    }
+
+    public String selectLastDate() {
+        List<String> result = jdbcTemplate.query(
+                SELECT_LAST_DATA_SQL,
+                (rs, rowNum) -> rs.getString("date")
+        );
+        return !CollectionUtils.isEmpty(result) ? result.get(0) : "01/01/2010";
     }
 }
