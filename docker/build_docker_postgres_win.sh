@@ -7,5 +7,5 @@ docker run --name postgresql \
     -e POSTGRES_USER=userpg \
     -e POSTGRES_DB=pgdb \
     -p 5433:5432 \
-    -v "./postgresql/data":"/var/lib/postgresql/data" \
+    -v "C:\Users\uoles\IdeaProjects\OtusClickHouse-Project\docker\postgresql\data":"/var/lib/postgresql/data" \
     -d postgres:latest
