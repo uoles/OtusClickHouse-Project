@@ -40,6 +40,7 @@ public class DebeziumConfig {
                 .with("plugin.name", "pgoutput")
                 .with("publication.name", PUBLICATION_NAME)
                 .with("slot.name", SLOT_NAME)
+                .with("snapshot.mode", "initial")
                 .build();
     }
 }

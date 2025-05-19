@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import ru.uoles.debezium.config.PropertiesConfig;
+import ru.uoles.config.AppConfig;
 import ru.uoles.debezium.constants.SlotConstants;
 import ru.uoles.debezium.db.PostgreConnection;
 import ru.uoles.debezium.db.PostgreJdbcTemplate;
-import ru.uoles.kafka.MessageProducer;
+import ru.uoles.kafka.KafkaManager;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -53,17 +53,19 @@ public class DebeziumListener {
 
     private final DebeziumEngine<RecordChangeEvent<SourceRecord>> debeziumEngine;
     private final PostgreJdbcTemplate postgreJdbcTemplate = PostgreConnection.INSTANCE.getTemplate();
-    private final MessageProducer messageProducer;
+    private final KafkaManager kafkaManager;
+    private final AppConfig appConfig;
 
     @Autowired
-    public DebeziumListener(Configuration customerConnectorConfiguration, MessageProducer messageProducer) {
+    public DebeziumListener(Configuration customerConnectorConfiguration, KafkaManager kafkaManager, AppConfig appConfig) {
         this.debeziumEngine = DebeziumEngine.create(ChangeEventFormat.of(Connect.class))
                 .using(customerConnectorConfiguration.asProperties())
                 .using(this.getClass().getClassLoader())
                 .notifying(this::handleChangeEvent)
                 .build();
 
-        this.messageProducer = messageProducer;
+        this.kafkaManager = kafkaManager;
+        this.appConfig = appConfig;
     }
 
     private void handleChangeEvent(RecordChangeEvent<SourceRecord> sourceRecordRecordChangeEvent) {
@@ -74,10 +76,9 @@ public class DebeziumListener {
             if (Objects.nonNull(sourceRecordChangeValue)) {
                 Operation operation = Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
 
-                if (!operation.equals(Operation.READ)) {
+                if (!operation.equals(Operation.READ) || appConfig.getSnapshotInitial() == 1) {
                     Map<String, Object> dataAfter = getData((Struct) sourceRecordChangeValue.get(AFTER));
-
-                    messageProducer.send(dataAfter);
+                    kafkaManager.addProcess(dataAfter);
                 }
             }
         } catch (Exception e) {
