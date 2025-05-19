@@ -20,11 +20,18 @@ import java.util.concurrent.Executors;
 @Component
 public class MessageProducer {
 
-    private final ObjectMapper mapper = new ObjectMapper();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public void send(final Map<String, Object> dataAfter) {
-        final ValuteDto valute = mapper.convertValue(dataAfter, ValuteDto.class);
+        ValuteDto valute = new ValuteDto();
+        valute.setId((Long) dataAfter.get("id"));
+        valute.setDate((String) dataAfter.get("date"));
+        valute.setName((String) dataAfter.get("name"));
+        valute.setStrId((String) dataAfter.get("str_id"));
+        valute.setNumCode((String) dataAfter.get("num_code"));
+        valute.setCharCode((String) dataAfter.get("char_code"));
+        valute.setNominal((String) dataAfter.get("nominal"));
+        valute.setValue((String) dataAfter.get("value"));
 
         executor.execute(() -> {
             log.info("--- ADD. Row: {}", valute);

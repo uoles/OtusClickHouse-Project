@@ -32,7 +32,8 @@ public final class PostgreOffsetBackingStoreConstants {
      * JDBC Offset storage CREATE TABLE syntax.
      */
     public static final String DEFAULT_TABLE_DDL =
-            "CREATE TABLE IF NOT EXISTS %s(id VARCHAR(36) NOT NULL, " +
+            "CREATE TABLE IF NOT EXISTS %s(" +
+                    "id VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "offset_key VARCHAR(1255), offset_val VARCHAR(1255)," +
                     "record_insert_ts TIMESTAMP NOT NULL," +
                     "record_insert_seq INTEGER NOT NULL" +

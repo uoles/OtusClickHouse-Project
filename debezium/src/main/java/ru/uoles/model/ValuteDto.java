@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class ValuteDto {
 
+    private Long id;
     private String date;
     private String name;
     private String strId;
