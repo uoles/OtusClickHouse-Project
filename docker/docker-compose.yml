@@ -71,6 +71,6 @@ services:
         condition: service_healthy
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29094
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9093
     links:
       - kafka
