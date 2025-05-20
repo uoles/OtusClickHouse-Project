@@ -7,11 +7,14 @@ CREATE TABLE valute_data
     str_id String,
     num_code String,
     char_code String,
-    nominal String,
-    value String
+    nominal UInt32,
+    value Float32
 )
 ENGINE = MergeTree
 ORDER BY (id, date, str_id);
+
+select *
+from valute_data;
 
 DROP TABLE valute_data;
 
@@ -47,11 +50,20 @@ CREATE MATERIALIZED VIEW valute_data_queue_mv TO valute_data
     str_id String,
     num_code String,
     char_code String,
-    nominal String,
-    value String
+    nominal UInt32,
+    value Float32
 ) AS
-SELECT id, parseDateTimeBestEffortOrNull(date,'Europe/Moscow') AS date, name, str_id, num_code, char_code, nominal, value
-FROM valute_data_queue;
+SELECT
+	id,
+	parseDateTimeBestEffortOrNull(date,'Europe/Moscow') AS date,
+	name,
+	str_id,
+	num_code,
+	char_code,
+	toInt32OrNull(nominal) as nominal,
+	toFloat32OrNull(replaceOne(value, ',', '.')) / nominal as value
+FROM valute_data_queue
+WHERE name not in ('Евро', 'Дирхам ОАЭ', 'Тенге');
 
 DROP TABLE valute_data_queue_mv;
 
